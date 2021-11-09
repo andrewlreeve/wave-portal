@@ -5,11 +5,17 @@ async function main() {
   // Compiles the contract
   const waveContractFactory = await ethers.getContractFactory("WavePortal");
   // Deploys the contract
-  const waveContract = await waveContractFactory.deploy();
+  const waveContract = await waveContractFactory.deploy({
+    value: ethers.utils.parseEther("0.1"),
+  });
   // Waits for the contract to be deployed
   await waveContract.deployed();
 
   console.log("Contract deployed to:", waveContract.address);
+
+  // Get contract balance
+  let contractBalance = await ethers.provider.getBalance(waveContract.address);
+  console.log("Contract balance: ", ethers.utils.formatEther(contractBalance));
 
   const waveCount = await waveContract.getTotalWaves();
   console.log("Wave count: ", waveCount.toNumber());
@@ -17,6 +23,10 @@ async function main() {
   // Sending a few waves
   let waveTxn = await waveContract.wave("A message!");
   await waveTxn.wait(); // Wait for the transaction to be mined
+
+  // Get contract balance to see contract has been deducted
+  contractBalance = await ethers.provider.getBalance(waveContract.address);
+  console.log("Contract balance: ", ethers.utils.formatEther(contractBalance));
 
   const [_, randomPerson] = await ethers.getSigners();
   waveTxn = await waveContract.connect(randomPerson).wave("Anothor Message");
