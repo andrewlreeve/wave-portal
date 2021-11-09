@@ -34,7 +34,7 @@ npx hardhat run scripts/deploy.ts --network rinkeby
 ```
 
 ```shell
-npx hardhat verify --network rinkeby 0x14ad30dF701803a351A504aD0142aaa82625c703 "Hello, Hardhat!"
+npx hardhat verify --network rinkeby 0x950a47DDBDf2dd9D126C5758572F6fcF8E0b4684 "Hello, Hardhat!"
 ```
 
 # Performance optimizations
