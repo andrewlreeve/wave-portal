@@ -2,7 +2,6 @@
 import { ethers } from "hardhat";
 
 async function main() {
-  const [owner, randomPerson] = await ethers.getSigners();
   // Compiles the contract
   const waveContractFactory = await ethers.getContractFactory("WavePortal");
   // Deploys the contract
@@ -11,25 +10,20 @@ async function main() {
   await waveContract.deployed();
 
   console.log("Contract deployed to:", waveContract.address);
-  console.log("Contract deployed by:", owner.address);
 
-  let waveCount;
-  let shakaCount;
-  waveCount = await waveContract.getTotalWaves();
+  const waveCount = await waveContract.getTotalWaves();
+  console.log("Wave count: ", waveCount.toNumber());
 
-  let waveTxn = await waveContract.wave();
-  await waveTxn.wait();
+  // Sending a few waves
+  let waveTxn = await waveContract.wave("A message!");
+  await waveTxn.wait(); // Wait for the transaction to be mined
 
-  waveCount = await waveContract.getTotalWaves();
+  const [_, randomPerson] = await ethers.getSigners();
+  waveTxn = await waveContract.connect(randomPerson).wave("Anothor Message");
+  await waveTxn.wait(); // Wait for the transaction to be mined
 
-  waveTxn = await waveContract.connect(randomPerson).wave();
-  await waveTxn.wait();
-
-  waveCount = await waveContract.getTotalWaves();
-
-  let shakaTxn = await waveContract.connect(randomPerson).shaka();
-  waveCount = await waveContract.getTotalWaves();
-  shakaCount = await waveContract.getTotalShakas();
+  const allWaves = await waveContract.getAllWaves();
+  console.log(allWaves);
 }
 
 async function runMain() {

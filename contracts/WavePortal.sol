@@ -6,30 +6,36 @@ import "hardhat/console.sol";
 
 contract WavePortal {
   uint256 totalWaves;
-  uint256 totalShakas;
+
+  event NewWave(address indexed from, uint256 timestamp, string message);
+
+  struct Wave {
+    address waver;
+    string message;
+    uint256 timestamp;
+  }
+
+  Wave[] waves;
 
   constructor() {
     console.log("Yo yo, I'm a smartish contract");
   }
 
-  function wave() public {
+  function wave(string memory _message) public {
     totalWaves += 1;
     console.log("%s waved!", msg.sender);
+
+    waves.push(Wave(msg.sender, _message, block.timestamp));
+
+    emit NewWave(msg.sender, block.timestamp, _message);
   }
 
-  function shaka() public {
-    totalWaves += 1;
-    totalShakas += 1;
-    console.log("%s shaka bruh!", msg.sender);
+  function getAllWaves() public view returns (Wave[] memory) {
+    return waves;
   }
 
   function getTotalWaves() public view returns (uint256) {
     console.log("We have %d total waves!", totalWaves);
     return totalWaves;
-  }
-
-  function getTotalShakas() public view returns (uint256) {
-    console.log("We have %d total shakas!", totalShakas);
-    return totalShakas;
   }
 }
